@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# PERL5LIB
+use lib qw(); # PERL5LIB
 use FindBin;use lib "$FindBin::Bin/../lib";use lib "$FindBin::Bin/../thirdparty/lib/perl5"; # LIBDIR
 
 # having a non-C locale for number will wreck all sorts of havoc
@@ -17,7 +17,10 @@ die "LDAPPASSWD_LDAP_HOST environment variable is not defined\n"
     unless $ENV{LDAPPASSWD_LDAP_HOST};
 
 die "LDAPPASSWD_LDAP_BASEDN environment variable is not defined\n"
-        unless $ENV{LDAPPASSWD_LDAP_BASEDN};
+    unless $ENV{LDAPPASSWD_LDAP_BASEDN};
+
+print STDERR "LDAPPASSWD_ENABLE_SAMBA environment variable is not defined\n"
+    unless exists $ENV{LDAPPASSWD_ENABLE_SAMBA};
 
 # Make signed cookies secure
 app->secrets(['dontneedsecurecookies in this app']);
@@ -33,7 +36,10 @@ my $errors = {
     },
     required => sub {
         "entry is mandatory"
-    }
+    },
+    errmsg => sub {
+        shift;
+    },
 };
 
 helper(
@@ -73,7 +79,7 @@ any '/' => sub {
             $ldap->modify( $dn, replace => {
                     sambaNTPassword => $sambaNTPassword,
                     sambaLMPassword => $sambaLMPassword,
-                    sambaPwdLastSet => time,
+                    sambaPwdLastSet => time
             });
         }
         $ldap->set_password(oldpassword=>$pass,newpasswd=>$newpass);
@@ -127,6 +133,10 @@ __DATA__
   <fieldset>
 %  for my $field (@fields){
 %      my $err = validation->error($field);
+%      if ($field eq 'pass' and $msg and $msg =~ /invalid credential/i){
+%           $err = [ errmsg => 'Invalid Credentials'];
+%           $msg = undef;
+%      }
   <div class="form-group <%= $err ? 'has-error' : '' %>">
 %=   label_for $field => $fields{$field} => class => 'control-label'
 %      if ($field =~ /pass/){
@@ -137,10 +147,6 @@ __DATA__
 %      }
 %      if ($err) {
         <span class="help-block"><%= errtext($err) %></span>
-%      }
-%      if ($field eq 'pass' and $msg and $msg =~ /invalid credential/){
-%           $msg = undef;
-        <span class="help-block">Password Invalid</span>
 %      }
   </div>
 %  }
