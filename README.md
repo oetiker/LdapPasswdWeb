@@ -11,6 +11,8 @@ in an ldap managed environment.
 Setup
 -----
 
+Download the latest release from https://github.com/oetiker/LdapPasswdWeb/releases/latest
+
 ```
 ./configure --prefix=/opt/ldap_passwd_web
  make
