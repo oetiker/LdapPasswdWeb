@@ -35,7 +35,7 @@ variables:
   `dc=mycompany,dc=xxx`. User accounts are expected to reside unter
   `uid=$user,ou=users,$basedn`
 
-* `LDAPPASSWD_ENABLE_SAMBA` set to 1 enables the changing the samba password of the
+* `LDAPPASSWD_ENABLE_SAMBA` set to 1 enables changing the samba password of the
   user. To make this work, the users need permission to write their own
   sambaNTPassword, sambaLMPassword and sambaPwdLastSet properties.
 
