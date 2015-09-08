@@ -54,7 +54,8 @@ You can now run LdapPasswdWeb.pl in reverse proxy mode.
 ./ldap_passwd_web.pl prefork
 ```
 
-On an upstart system you could easily run this standalone:
+On an upstart system you could easily run this standalone by creating
+`/etc/init/ldap_passwd.conf`:
 
 ```
 start on stopped rc RUNLEVEL=[2345]
@@ -66,7 +67,7 @@ env LDAPPASSWD_LDAP_BASEDN=dc=mycompany,dc=xxx
 env LDAPPASSWD_ENABLE_SAMBA=1
 
 respawn
-exec /opt/ldappasswdweb/bin/ldap_passwd_web.pl prefork -l 'https://*:443'
+exec /opt/ldap_passwd_web/bin/ldap_passwd_web.pl prefork -l 'https://*:443'
 ```
 
 Packaging
