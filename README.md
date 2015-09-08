@@ -6,6 +6,8 @@ Date: #DATE#
 LdapPasswdWeb is a little webapplication letting users change their password
 in an ldap managed environment.
 
+![screenshot](https://cloud.githubusercontent.com/assets/429279/9728323/55e6fee4-5607-11e5-8e39-2b83e303cff8.png)
+
 Setup
 -----
 
