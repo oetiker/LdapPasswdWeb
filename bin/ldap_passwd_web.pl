@@ -70,8 +70,8 @@ any '/' => sub {
 
 
     eval {
-        my $ldap = Net::LDAP->new ( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 ) or die "$@";
-        $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1');
+        my $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
+        $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
         my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";
         $ldap->bind( $dn, password => $pass);
         if ($ENV{LDAPPASSWD_ENABLE_SAMBA}){
