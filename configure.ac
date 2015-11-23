@@ -1,4 +1,5 @@
-#  Copyright (C) 2015 Tobias Oetiker
+# Copyright (C) 2015 Tobias Oetiker
+# GPL V3 licensed
 
 AC_INIT([ldap-passwd-web],m4_esyscmd([tr -d '\n' < VERSION]),[tobi@oetiker.ch])
 AC_PREREQ([2.59])

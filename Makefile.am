@@ -1,4 +1,5 @@
-#  Copyright (C) 2015 Tobias Oetiker
+# Copyright (C) 2015 Tobias Oetiker
+# GPL V3 licensed
 
 AUTOMAKE_OPTIONS =  foreign
 
