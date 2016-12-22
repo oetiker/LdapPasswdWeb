@@ -28,7 +28,7 @@ app->secrets(['dontneedsecurecookies in this app']);
 my $errors = {
     size => sub {
         my ($value,$min,$max) = @_;
-        return "Size is $value (must be between $min and $max)";
+        return "Size is must be between $min and $max";
     },
     equal_to => sub {
         my ($value,$key) = @_;
@@ -36,6 +36,10 @@ my $errors = {
     },
     required => sub {
         "entry is mandatory"
+    },
+    passwordQuality => sub {
+        my ($value) = @_;
+        return qq{$value expected. See <a href="https://uit.stanford.edu/service/accounts/passwords/quickguide" target="_blank">Help</a> for inspiration.};
     },
     errmsg => sub {
         shift;
@@ -51,15 +55,31 @@ helper(
     }
 );
 
+my $passwordQuality = sub {
+    my ($validation, $name, $value) = @_;
+    my $len = length $value;
+    return "Lowercase letters" if $value !~ /[a-z]/;
+    return undef if $len >= 20;
+    return "Uppercase letters" if $value !~ /[A-Z]/;
+    return undef if $len >= 16;
+    return "Numbers" if $value !~ /[0-9]/;
+    return undef if $len >= 12;
+    return "Symbols like $%#@.; ..." if $value !~ /[^\sa-zA-Z0-9]/;
+    return undef if $len >= 8;
+    return "At least 8 characters expected";
+};
+
 # Main login action
 any '/' => sub {
     my $c = shift;
     my $validation = $c->validation;
     return $c->render unless $validation->has_data;
 
+    $validation->validator->add_check(passwordQuality => $passwordQuality);
+
     $validation->required('user')->size(1, 20);
-    $validation->required('pass')->size(1, 80);
-    $validation->required('newpass')->size(8, 50);
+    $validation->required('pass')->size(1,80);
+    $validation->required('newpass')->passwordQuality();
     $validation->required('newpass_again')->equal_to('newpass');
 
     return $c->render if $validation->has_error;
@@ -146,7 +166,7 @@ __DATA__
 %=         text_field $field => class=>'form-control'
 %      }
 %      if ($err) {
-        <span class="help-block"><%= errtext($err) %></span>
+        <span class="help-block"><%== errtext($err) %></span>
 %      }
   </div>
 %  }
@@ -175,6 +195,8 @@ __DATA__
     <h1>Success!</h1>
     <p>
         The password of user <em><%= validation->param('user') %></em> has been updated.
+        Note, changeing your user password will also trigger a re-generation of your
+        VPN credentials if you are in the VPN group.
     </p>
 </div>
 </div>
