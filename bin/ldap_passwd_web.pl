@@ -64,9 +64,9 @@ my $passwordQuality = sub {
     return undef if $len >= 16;
     return "Numbers" if $value !~ /[0-9]/;
     return undef if $len >= 12;
-    return "Symbols like $%#@.; ..." if $value !~ /[^\sa-zA-Z0-9]/;
+    return 'Symbols like $%#@.; ...' if $value !~ /[^\sa-zA-Z0-9]/;
     return undef if $len >= 8;
-    return "At least 8 characters expected";
+    return "At least 8 characters";
 };
 
 # Main login action
