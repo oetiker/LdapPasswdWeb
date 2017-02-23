@@ -88,11 +88,11 @@ any '/' => sub {
     my $pass = $c->param('pass');
     my $newpass = $c->param('newpass');
 
-
+    my $ldap;
+    my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";    
     eval {
         my $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
         $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
-        my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";
         $ldap->bind( $dn, password => $pass);
     };
     if (my $error = $@){
@@ -103,7 +103,7 @@ any '/' => sub {
     }
     eval {
         $ldap->set_password(oldpassword=>$pass,newpasswd=>$newpass);
-    }
+    };
     if (my $error = $@){
         $error =~ s/ at \S+ line.*//;
         $c->app->log->error($error);
