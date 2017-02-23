@@ -94,20 +94,37 @@ any '/' => sub {
         $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
         my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";
         $ldap->bind( $dn, password => $pass);
-        if ($ENV{LDAPPASSWD_ENABLE_SAMBA}){
+    };
+    if (my $error = $@){
+        $error =~ s/ at \S+ line.*//;
+        $c->app->log->error($error);
+        $c->flash(message=>"failed to bind to LDAP server ($error)");
+        return $c->render;
+    }
+    eval {
+        $ldap->set_password(oldpassword=>$pass,newpasswd=>$newpass);
+    }
+    if (my $error = $@){
+        $error =~ s/ at \S+ line.*//;
+        $c->app->log->error($error);
+        $c->flash(message=>"failed to set password ($error)");
+        return $c->render;
+    }
+    if ($ENV{LDAPPASSWD_ENABLE_SAMBA}){
+        eval {
             my ($sambaLMPassword,$sambaNTPassword) = ntlmgen $newpass;
             $ldap->modify( $dn, replace => {
                     sambaNTPassword => $sambaNTPassword,
                     sambaLMPassword => $sambaLMPassword,
                     sambaPwdLastSet => time
             });
-        }
-        $ldap->set_password(oldpassword=>$pass,newpasswd=>$newpass);
-    };
-    if (my $error = $@){
-        $error =~ s/ at \S+ line.*//;
-        $c->flash(message=>$error);
-        return $c->render;
+        };
+        if (my $error = $@){
+            $error =~ s/ at \S+ line.*//;
+            $c->app->log->error($error);
+            $c->flash(message=>"set normal password but failed to set samba password ($error)");
+            return $c->render;
+        } 
     }
 
     $c->render('thanks');
