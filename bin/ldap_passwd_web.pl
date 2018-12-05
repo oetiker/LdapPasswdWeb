@@ -88,48 +88,15 @@ any '/' => sub {
     my $pass = $c->param('pass');
     my $newpass = $c->param('newpass');
 
-    my $ldap;
-    my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";    
-    eval {
-        my $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
-        $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
-        $ldap->bind( $dn, password => $pass);
-    };
-    if (my $error = $@){
-        $error =~ s/ at \S+ line.*//;
-        $c->app->log->error($error);
-        $c->flash(message=>"failed to bind to LDAP server ($error)");
+    open my $FH, '-|',"/usr/bin/smbpasswd","-U",$user,"-r","aquarius.carbo-link.com","-s";
+    print $FH "$pass\n$newpass\n$newpass\n";
+    close $FH;
+    if ($?){
+        $c->flash(message=>"failed to set smb password $?");
         return $c->render;
     }
-    eval {
-        $ldap->set_password(oldpassword=>$pass,newpasswd=>$newpass);
-    };
-    if (my $error = $@){
-        $error =~ s/ at \S+ line.*//;
-        $c->app->log->error($error);
-        $c->flash(message=>"failed to set password ($error)");
-        return $c->render;
-    }
-    if ($ENV{LDAPPASSWD_ENABLE_SAMBA}){
-        eval {
-            my ($sambaLMPassword,$sambaNTPassword) = ntlmgen $newpass;
-            $ldap->modify( $dn, replace => {
-                    sambaNTPassword => $sambaNTPassword,
-                    sambaLMPassword => $sambaLMPassword,
-                    sambaPwdLastSet => time
-            });
-        };
-        if (my $error = $@){
-            $error =~ s/ at \S+ line.*//;
-            $c->app->log->error($error);
-            $c->flash(message=>"set normal password but failed to set samba password ($error)");
-            return $c->render;
-        } 
-    }
-
-    $c->render('thanks');
-
-} => 'index';
+    $c->render("Password changed");
+};
 
 
 app->start;
@@ -156,7 +123,7 @@ __DATA__
 
 @@ index.html.ep
 % layout 'default';
-% title 'LDAP Password Setter';
+% title 'Samba Password Setter';
 
 <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
 <h1>Password Reset</h1>
@@ -212,8 +179,6 @@ __DATA__
     <h1>Success!</h1>
     <p>
         The password of user <em><%= validation->param('user') %></em> has been updated.
-        Note, changeing your user password will also trigger a re-generation of your
-        VPN credentials if you are in the VPN group.
     </p>
 </div>
 </div>
