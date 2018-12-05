@@ -1,3 +1,6 @@
+0.2.1 2018-12-05 Manuel Oetiker (manuel@oetiker.ch)
+- move from ldap to shell smbpasswd
+
 0.2.0 2016-12-22 Tobias Oetiker (tobi@oetiker.ch)
 - add standford password requirements logic
 
