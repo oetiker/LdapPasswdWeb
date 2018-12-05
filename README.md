@@ -46,7 +46,7 @@ You can now run SMBPasswdWeb.pl in reverse proxy mode.
 ```
 
 On an systemd you could easily run this standalone by creating
-`/etc/systemd/system/smb_passwd_web.conf`:
+`/etc/systemd/system/smbpasswdweb.service`:
 
 ```
 [Unit]
