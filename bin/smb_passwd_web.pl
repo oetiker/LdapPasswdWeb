@@ -9,10 +9,8 @@ use POSIX qw(locale_h);
 setlocale(LC_NUMERIC, "C");
 
 use Mojolicious::Lite;
-use Net::LDAP;
-use Net::LDAP::Extension::SetPassword;
-use Crypt::SmbHash  qw(ntlmgen);
-
+use IPC::Open3;
+use Symbol 'gensym';
 
 die "SMBPASSWD_SMB_HOST environment variable is not defined\n"
    unless $ENV{SMBPASSWD_SMB_HOST};
@@ -83,13 +81,17 @@ any '/' => sub {
     my $user = $c->param('user');
     my $pass = $c->param('pass');
     my $newpass = $c->param('newpass');
-
-    open my $FH, '|-',"/usr/bin/smbpasswd","-U",$user,"-r","$ENV{SMBPASSWD_SMB_HOST}","-s";
-    print $FH "$pass\n$newpass\n$newpass\n";
-    close $FH;
+    my($wtr, $rdr, $err);
+    $err = gensym;
+    warn "### calling smbpasswd";
+    my $pid = open3($wtr, $rdr, $err,
+        "/usr/bin/smbpasswd","-U",$user,"-r","$ENV{SMBPASSWD_SMB_HOST}","-s");
+    print $wtr "$pass\n$newpass\n$newpass\n";
+    waitpid( $pid, 0 );
     if ($?){
-        $c->flash(message=>"failed to set smb password $?");
-        return $c->render;
+        warn "something went wrong";
+        $c->flash(message=>"failed to set smb password".<$err>);
+        return $c->redirect_to('index');
     }
     $c->render("Password changed");
 }=>"index";
