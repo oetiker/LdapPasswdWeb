@@ -68,7 +68,7 @@ CHANGES, VERSION and run ./bootstrap
 You can also package the application as a nice tar.gz file, it will contain
 a mini copy of cpan, so that all perl modules can be rebuilt at the
 destination.  If you want to make sure that your project builds with perl
-5.10.1, make sure to set PERL to a perl 5.10.1 interpreter, remove your
+5.22.1, make sure to set PERL to a perl 5.12.1 interpreter, remove your
 thirdparty directory and configure again.  Now all modules to make your
 project fly with an old perl will be included in the distribution.
 
