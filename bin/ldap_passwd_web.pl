@@ -13,14 +13,14 @@ use Net::LDAP;
 use Net::LDAP::Extension::SetPassword;
 use Crypt::SmbHash  qw(ntlmgen);
 
-die "LDAPPASSWD_LDAP_HOST environment variable is not defined\n"
-    unless $ENV{LDAPPASSWD_LDAP_HOST};
-
-die "LDAPPASSWD_LDAP_BASEDN environment variable is not defined\n"
-    unless $ENV{LDAPPASSWD_LDAP_BASEDN};
-
-print STDERR "LDAPPASSWD_ENABLE_SAMBA environment variable is not defined\n"
-    unless exists $ENV{LDAPPASSWD_ENABLE_SAMBA};
+#die "LDAPPASSWD_LDAP_HOST environment variable is not defined\n"
+#   unless $ENV{LDAPPASSWD_LDAP_HOST};
+#
+#die "LDAPPASSWD_LDAP_BASEDN environment variable is not defined\n"
+#    unless $ENV{LDAPPASSWD_LDAP_BASEDN};
+#
+#print STDERR "LDAPPASSWD_ENABLE_SAMBA environment variable is not defined\n"
+#    unless exists $ENV{LDAPPASSWD_ENABLE_SAMBA};
 
 # Make signed cookies secure
 app->secrets(['dontneedsecurecookies in this app']);
