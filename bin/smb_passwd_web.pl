@@ -13,17 +13,10 @@ use Net::LDAP;
 use Net::LDAP::Extension::SetPassword;
 use Crypt::SmbHash  qw(ntlmgen);
 
-#die "LDAPPASSWD_LDAP_HOST environment variable is not defined\n"
-#   unless $ENV{LDAPPASSWD_LDAP_HOST};
-#
-die "SMB_HOST environment variable is not defined\n"
-   unless $ENV{SMB_HOST};
 
-#die "LDAPPASSWD_LDAP_BASEDN environment variable is not defined\n"
-#    unless $ENV{LDAPPASSWD_LDAP_BASEDN};
-#
-#print STDERR "LDAPPASSWD_ENABLE_SAMBA environment variable is not defined\n"
-#    unless exists $ENV{LDAPPASSWD_ENABLE_SAMBA};
+die "SMBPASSWD_SMB_HOST environment variable is not defined\n"
+   unless $ENV{SMBPASSWD_SMB_HOST};
+
 
 # Make signed cookies secure
 app->secrets(['dontneedsecurecookies in this app']);
@@ -91,7 +84,7 @@ any '/' => sub {
     my $pass = $c->param('pass');
     my $newpass = $c->param('newpass');
 
-    open my $FH, '-|',"/usr/bin/smbpasswd","-U",$user,"-r","$ENV{SMB_HOST}","-s";
+    open my $FH, '|-',"/usr/bin/smbpasswd","-U",$user,"-r","$ENV{SMBPASSWD_SMB_HOST}","-s";
     print $FH "$pass\n$newpass\n$newpass\n";
     close $FH;
     if ($?){
