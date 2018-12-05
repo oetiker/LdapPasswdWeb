@@ -42,21 +42,27 @@ make install
 You can now run SMBPasswdWeb.pl in reverse proxy mode.
 
 ```
-./smb_passwd_web.pl prefork
+./smb_passwd_web.pl prefork --listen=http://127.0.0.1:9688
 ```
 
-On an upstart system you could easily run this standalone by creating
-`/etc/init/smb_passwd.conf`:
+On an systemd you could easily run this standalone by creating
+`/etc/systemd/system/smb_passwd_web.conf`:
 
 ```
-start on stopped rc RUNLEVEL=[2345]
+[Unit]
+Description=SMB Password Change Web Application
 
-stop on runlevel [!2345]
-
-env SMBPASSWD_SMB_HOST=hostname.mycompany.xxx
-
-respawn
-exec /opt/smb_passwd_web/bin/smb_passwd_web.pl prefork -l 'https://*:443'
+[Service]
+Type=simple
+User=smbpasswdweb
+Group=smbpasswdweb
+Restart=always
+Environment=SMBPASSWD_SMB_HOST=hostname.domain.com
+ExecStart=/opt/smb_passwd_web/bin/smb_passwd_web.pl prefork --listen http://127.0.0.1:6879
+ExecStop=/usr/bin/kill -f 'smb_passwd_web.+6879
+Restart=always
+[Install]
+WantedBy=multi-user.target
 ```
 
 Packaging
@@ -68,7 +74,7 @@ CHANGES, VERSION and run ./bootstrap
 You can also package the application as a nice tar.gz file, it will contain
 a mini copy of cpan, so that all perl modules can be rebuilt at the
 destination.  If you want to make sure that your project builds with perl
-5.22.1, make sure to set PERL to a perl 5.12.1 interpreter, remove your
+5.22.1, make sure to set PERL to a perl 5.22.1 interpreter, remove your
 thirdparty directory and configure again.  Now all modules to make your
 project fly with an old perl will be included in the distribution.
 
