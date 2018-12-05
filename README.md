@@ -1,9 +1,9 @@
-SambaPasswdWeb
+SMBPasswdWeb
 =============
 Version: #VERSION#
 Date: #DATE#
 
-SambaPasswdWeb is a little web application letting users change their
+SMBPasswdWeb is a little web application letting users change their
 password in a Samba environment.  The app relies solely on perl modules todo its work. No external utilities are
 required, and all missing, non-core perl modules will be built and installed alongside the app as required.
 
@@ -12,10 +12,10 @@ required, and all missing, non-core perl modules will be built and installed alo
 Setup
 -----
 
-Download the latest release from https://github.com/metiker/LdapPasswdWeb/releases/latest
+Download the latest release from https://github.com/metiker/SMBPasswdWeb/releases/latest
 
 ```
-./configure --prefix=/opt/ldap_passwd_web
+./configure --prefix=/opt/smb_passwd_web
  make
 ```
  
@@ -25,18 +25,10 @@ hints on how to fix the situation if something is missing.
 Configuration
 -------------
 
-LdapPasswdWeb expects its configuration to be present in Environment
+SmbPasswdWeb expects its configuration to be present in Environment
 variables:
 
-* `LDAPPASSWD_LDAP_HOST` - the ldap host. eg. `ds1.mycompany.xxx`
-
-* `LDAPPASSWD_LDAP_BASEDN` - the base DN of your user accounts. eg
-  `dc=mycompany,dc=xxx`. User accounts are expected to reside unter
-  `uid=$user,ou=users,$basedn`
-
-* `LDAPPASSWD_ENABLE_SAMBA` set to 1 enables changing the samba password of the
-  user. To make this work, the users need permission to write their own
-  sambaNTPassword, sambaLMPassword and sambaPwdLastSet properties.
+* `SMB_HOST` - the samba host. eg. `hostname.mycompany.xxx`
 
 Installation
 ------------
@@ -50,23 +42,21 @@ make install
 You can now run LdapPasswdWeb.pl in reverse proxy mode.
 
 ```
-./ldap_passwd_web.pl prefork
+./smb_passwd_web.pl prefork
 ```
 
 On an upstart system you could easily run this standalone by creating
-`/etc/init/ldap_passwd.conf`:
+`/etc/init/smb_passwd.conf`:
 
 ```
 start on stopped rc RUNLEVEL=[2345]
 
 stop on runlevel [!2345]
 
-env LDAPPASSWD_LDAP_HOST=ds1.mycompany.xxx
-env LDAPPASSWD_LDAP_BASEDN=dc=mycompany,dc=xxx
-env LDAPPASSWD_ENABLE_SAMBA=1
+env SMB_HOST=hostname.mycompany.xxx
 
 respawn
-exec /opt/ldap_passwd_web/bin/ldap_passwd_web.pl prefork -l 'https://*:443'
+exec /opt/ldap_passwd_web/bin/smb_passwd_web.pl prefork -l 'https://*:443'
 ```
 
 Packaging
@@ -86,4 +76,4 @@ project fly with an old perl will be included in the distribution.
 
 Enjoy!
 
-Tobias Oetiker <tobi@oetiker.ch>
+Manuel Oetiker <manuel@oetiker.ch>
