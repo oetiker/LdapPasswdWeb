@@ -12,7 +12,7 @@ required, and all missing, non-core perl modules will be built and installed alo
 Setup
 -----
 
-Download the latest release from https://github.com/metiker/SMBPasswdWeb/releases/latest
+Download the latest release from https://github.com/moetiker/SMBPasswdWeb/releases/latest
 
 ```
 ./configure --prefix=/opt/smb_passwd_web
@@ -28,7 +28,7 @@ Configuration
 SmbPasswdWeb expects its configuration to be present in Environment
 variables:
 
-* `SMB_HOST` - the samba host. eg. `hostname.mycompany.xxx`
+* `SMBPASSWD_SMB_HOST` - the samba host. eg. `hostname.mycompany.xxx`
 
 Installation
 ------------
@@ -39,7 +39,7 @@ To install the application, just run
 make install
 ```
 
-You can now run LdapPasswdWeb.pl in reverse proxy mode.
+You can now run SMBPasswdWeb.pl in reverse proxy mode.
 
 ```
 ./smb_passwd_web.pl prefork
@@ -53,10 +53,10 @@ start on stopped rc RUNLEVEL=[2345]
 
 stop on runlevel [!2345]
 
-env SMB_HOST=hostname.mycompany.xxx
+env SMBPASSWD_SMB_HOST=hostname.mycompany.xxx
 
 respawn
-exec /opt/ldap_passwd_web/bin/smb_passwd_web.pl prefork -l 'https://*:443'
+exec /opt/smb_passwd_web/bin/smb_passwd_web.pl prefork -l 'https://*:443'
 ```
 
 Packaging
