@@ -1,11 +1,10 @@
-LdapPasswdWeb
+SambaPasswdWeb
 =============
 Version: #VERSION#
 Date: #DATE#
 
-LdapPasswdWeb is a little web application letting users change their
-password in an LDAP environment.  Both the unix password as well as the
-Samba password can be changed. The app relies solely on perl modules todo its work. No external utilities are
+SambaPasswdWeb is a little web application letting users change their
+password in a Samba environment.  The app relies solely on perl modules todo its work. No external utilities are
 required, and all missing, non-core perl modules will be built and installed alongside the app as required.
 
 ![screenshot](https://cloud.githubusercontent.com/assets/429279/9728323/55e6fee4-5607-11e5-8e39-2b83e303cff8.png)
@@ -13,7 +12,7 @@ required, and all missing, non-core perl modules will be built and installed alo
 Setup
 -----
 
-Download the latest release from https://github.com/oetiker/LdapPasswdWeb/releases/latest
+Download the latest release from https://github.com/metiker/LdapPasswdWeb/releases/latest
 
 ```
 ./configure --prefix=/opt/ldap_passwd_web
