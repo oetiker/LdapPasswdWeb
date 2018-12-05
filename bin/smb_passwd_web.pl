@@ -92,7 +92,7 @@ any '/' => sub {
         return $c->render;
     }
     $c->render("Password changed");
-};
+}=>"index";
 
 
 app->start;

@@ -2836,7 +2836,7 @@ fi
 mod_ok=1
 MISSING_PERL_MODULES=""
 if test "$enable_pkgonly" != yes; then
-   for module in Mojolicious@6.17 IO::Socket::SSL Net::LDAP Crypt::SmbHash Digest::MD4 ; do
+   for module in Mojolicious IO::Socket::SSL Digest::MD4 ; do
      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perl module '$module'" >&5
 $as_echo_n "checking for perl module '$module'... " >&6; }
      if ${PERL} -I`dirname $0`/thirdparty/lib/perl5 -e 'my($m,$v) = split /\@/, q{'$module'};eval "use $m"; exit 1 if $@; exit 1 if not $v or eval(q{$}.$m.q{::VERSION}) ne $v' ; then
