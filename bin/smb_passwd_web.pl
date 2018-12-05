@@ -93,7 +93,7 @@ any '/' => sub {
         $c->flash(message=>"failed to set smb password".<$err>);
         return $c->redirect_to('index');
     }
-    $c->render('thanks';
+    $c->render('thanks');
 }=>"index";
 
 
