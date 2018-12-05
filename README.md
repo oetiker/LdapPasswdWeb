@@ -1,11 +1,10 @@
-LdapPasswdWeb
+SMBPasswdWeb
 =============
 Version: #VERSION#
 Date: #DATE#
 
-LdapPasswdWeb is a little web application letting users change their
-password in an LDAP environment.  Both the unix password as well as the
-Samba password can be changed. The app relies solely on perl modules todo its work. No external utilities are
+SMBPasswdWeb is a little web application letting users change their
+password in a Samba environment.  The app relies solely on perl modules todo its work. No external utilities are
 required, and all missing, non-core perl modules will be built and installed alongside the app as required.
 
 ![screenshot](https://cloud.githubusercontent.com/assets/429279/9728323/55e6fee4-5607-11e5-8e39-2b83e303cff8.png)
@@ -13,10 +12,10 @@ required, and all missing, non-core perl modules will be built and installed alo
 Setup
 -----
 
-Download the latest release from https://github.com/oetiker/LdapPasswdWeb/releases/latest
+Download the latest release from https://github.com/moetiker/SMBPasswdWeb/releases/latest
 
 ```
-./configure --prefix=/opt/ldap_passwd_web
+./configure --prefix=/opt/smb_passwd_web
  make
 ```
  
@@ -26,18 +25,10 @@ hints on how to fix the situation if something is missing.
 Configuration
 -------------
 
-LdapPasswdWeb expects its configuration to be present in Environment
+SmbPasswdWeb expects its configuration to be present in Environment
 variables:
 
-* `LDAPPASSWD_LDAP_HOST` - the ldap host. eg. `ds1.mycompany.xxx`
-
-* `LDAPPASSWD_LDAP_BASEDN` - the base DN of your user accounts. eg
-  `dc=mycompany,dc=xxx`. User accounts are expected to reside unter
-  `uid=$user,ou=users,$basedn`
-
-* `LDAPPASSWD_ENABLE_SAMBA` set to 1 enables changing the samba password of the
-  user. To make this work, the users need permission to write their own
-  sambaNTPassword, sambaLMPassword and sambaPwdLastSet properties.
+* `SMBPASSWD_SMB_HOST` - the samba host. eg. `hostname.mycompany.xxx`
 
 Installation
 ------------
@@ -48,26 +39,30 @@ To install the application, just run
 make install
 ```
 
-You can now run LdapPasswdWeb.pl in reverse proxy mode.
+You can now run SMBPasswdWeb.pl in reverse proxy mode.
 
 ```
-./ldap_passwd_web.pl prefork
+./smb_passwd_web.pl prefork --listen=http://127.0.0.1:9688
 ```
 
-On an upstart system you could easily run this standalone by creating
-`/etc/init/ldap_passwd.conf`:
+On an systemd you could easily run this standalone by creating
+`/etc/systemd/system/smbpasswdweb.service`:
 
 ```
-start on stopped rc RUNLEVEL=[2345]
+[Unit]
+Description=SMB Password Change Web Application
 
-stop on runlevel [!2345]
-
-env LDAPPASSWD_LDAP_HOST=ds1.mycompany.xxx
-env LDAPPASSWD_LDAP_BASEDN=dc=mycompany,dc=xxx
-env LDAPPASSWD_ENABLE_SAMBA=1
-
-respawn
-exec /opt/ldap_passwd_web/bin/ldap_passwd_web.pl prefork -l 'https://*:443'
+[Service]
+Type=simple
+User=smbpasswdweb
+Group=smbpasswdweb
+Restart=always
+Environment=SMBPASSWD_SMB_HOST=hostname.domain.com
+ExecStart=/opt/smb_passwd_web/bin/smb_passwd_web.pl prefork --listen http://127.0.0.1:6879
+ExecStop=/usr/bin/kill -f 'smb_passwd_web.+6879
+Restart=always
+[Install]
+WantedBy=multi-user.target
 ```
 
 Packaging
@@ -79,7 +74,7 @@ CHANGES, VERSION and run ./bootstrap
 You can also package the application as a nice tar.gz file, it will contain
 a mini copy of cpan, so that all perl modules can be rebuilt at the
 destination.  If you want to make sure that your project builds with perl
-5.10.1, make sure to set PERL to a perl 5.10.1 interpreter, remove your
+5.22.1, make sure to set PERL to a perl 5.22.1 interpreter, remove your
 thirdparty directory and configure again.  Now all modules to make your
 project fly with an old perl will be included in the distribution.
 
@@ -87,4 +82,4 @@ project fly with an old perl will be included in the distribution.
 
 Enjoy!
 
-Tobias Oetiker <tobi@oetiker.ch>
+Manuel Oetiker <manuel@oetiker.ch>

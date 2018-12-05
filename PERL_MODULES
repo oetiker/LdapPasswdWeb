@@ -1,5 +1,3 @@
-Mojolicious@6.17
+Mojolicious
 IO::Socket::SSL
-Net::LDAP
-Crypt::SmbHash
 Digest::MD4
