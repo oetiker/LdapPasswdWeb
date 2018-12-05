@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS =  foreign
 
-MJ_SCRIPT = ldap_passwd_web
+MJ_SCRIPT = smb_passwd_web
 
 BIN = bin/$(MJ_SCRIPT).pl
 
