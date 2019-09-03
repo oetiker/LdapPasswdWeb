@@ -91,7 +91,7 @@ any '/' => sub {
     my $ldap;
     my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";    
     eval {
-        my $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
+        $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
         $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
         $ldap->bind( $dn, password => $pass);
     };
@@ -139,8 +139,10 @@ __DATA__
 <!DOCTYPE html>
 <html lang="en" >
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   </head>
   <body>
   <title><%= title %></title>
@@ -151,6 +153,23 @@ __DATA__
       <%= content %>
   </div>
 </div>
+<div class="container">
+<div class="row">
+<h2 class="col-xs-12">Password complexity rules</h2>
+<div class="col-md-3 col-xs-6"><div class="panel panel-default"><div class="panel-body">
+<b>8-11 character passwords</b> require the use of upper case, lower case, numeric, and special characters.<br/>
+</div></div></div>
+<div class="col-md-3 col-xs-6"><div class="panel panel-default"><div class="panel-body">
+<b>12-15 character passwords</b> require the use of upper case, lower case, and numeric characters.<br/>
+</div></div></div>
+<div class="col-md-3 col-xs-6"><div class="panel panel-default"><div class="panel-body">
+<b>16-19 character passwords</b> require upper and lower case characters.<br/><br/>
+</div></div></div>
+<div class="col-md-3 col-xs-6"><div class="panel panel-default"><div class="panel-body">
+<b>20+ character passwords</b> require lower case characters.<br/><br/>
+</div></div></div>
+</div><!-- row -->
+</div><!-- container -->
 </body>
 </html>
 
