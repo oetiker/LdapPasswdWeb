@@ -108,7 +108,7 @@ any '/' => sub {
         $error =~ s/ at \S+ line.*//;
         $c->app->log->error($error);
         $c->flash(message=>"failed to set password ($error)");
-        return $c->render;
+        return $c->redirect('index');
     }
     if ($ENV{LDAPPASSWD_ENABLE_SAMBA}){
         eval {
