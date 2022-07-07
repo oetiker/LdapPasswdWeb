@@ -92,7 +92,7 @@ any '/' => sub {
     my $dn = "uid=$user,ou=users,$ENV{LDAPPASSWD_LDAP_BASEDN}";    
     eval {
         $ldap = Net::LDAP->new( $ENV{LDAPPASSWD_LDAP_HOST}, onerror=>'die', version=>3 );
-        $ldap->start_tls( verify => 'none', sslversion=> 'tlsv1' );
+        $ldap->start_tls( verify => 'none' );
         $ldap->bind( $dn, password => $pass);
     };
     if (my $error = $@){
